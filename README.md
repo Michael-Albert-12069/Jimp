@@ -1,5 +1,5 @@
 # Jimp
-the Java Image Manipulation Library
+the Java Image Manipulation Program
 ## Purpose
 the goal is to create a 
 - professional oriented
