@@ -1,7 +1,10 @@
 package Application;
 
+import Application.Tools.HSL;
 import Application.Tools.RGB;
+import Application.Tools.Transform;
 import UI.Canvas;
+import UI.Panels.HSLPanel;
 import UI.Panels.PanelMgr;
 import UI.Panels.RGBPanel;
 import UI.Window;
@@ -12,14 +15,25 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Main {
+    public static final int monitorW = 1440;
+    public static final int monitorH = 600;
+
+
     public static int COLOR_MODE = PanelMgr.DARK_MODE;
-    public static RGBPanel rgbPanel;
     public static Window mainWindow;
     public static Canvas canvas;
+
     public static PanelMgr manager;
+    public static RGBPanel rgbPanel;
+    public static HSLPanel hslPanel;
+
+
     public static JButton renderBtn;
 
     public static Picture pic;
+    public static String imgPath = "G:\\Shared drives\\Photo 2019\\Photography_ALBERTM\\Freelance\\MtSi2\\IMG_0020.jpg";
+
+
 
     public static void initPanelMGR(){
         manager = new PanelMgr(COLOR_MODE);
@@ -47,24 +61,36 @@ public class Main {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        pic = new Picture("C:\\Users\\Michael Albert\\Documents\\Code\\Jimp\\picture-lab\\resources\\images\\water.jpg");
+        Transform.simpleTransform(pic = new Picture(imgPath),(int) Math.round(pic.getHeight()/((double)monitorH))).write("G:\\Shared drives\\Photo 2019\\Photography_ALBERTM\\Freelance\\MtSi2\\IMG_00202.jpg");
+        Thread.sleep(500);
+        pic = new Picture("G:\\Shared drives\\Photo 2019\\Photography_ALBERTM\\Freelance\\MtSi2\\IMG_00202.jpg");
+
         init();
         initPanelMGR();
         rgbPanel = manager.rgbPanel;
+        hslPanel = manager.hslPanel;
 
         renderBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                System.out.println(rgbPanel.r/127.0 + " ; " +rgbPanel.g/127.0+ " ; " +rgbPanel.b/127.0);
                 canvas.images.remove("main");
-                canvas.addImage("main", RGB.rgb(pic, rgbPanel.r, rgbPanel.g, rgbPanel.b));
+//                System.out.println(rgbPanel.r/127.0 + " ; " +rgbPanel.g/127.0+ " ; " +rgbPanel.b/127.0);
+
+                Picture newImg = RGB.rgb(pic, rgbPanel.r, rgbPanel.g, rgbPanel.b);
+
+                System.out.println("hue: " + (hslPanel.s / 100.0));
+                if (hslPanel.s != 0){
+                    newImg = HSL.saturate(newImg, (hslPanel.s / 100.0));
+                }
+                canvas.addImage("main", newImg);
 
                 canvas.repaint();
-                pic = new Picture("C:\\Users\\Michael Albert\\Documents\\Code\\Jimp\\picture-lab\\resources\\images\\water.jpg");
+                pic = new Picture(imgPath);
             }
         });
 
     }
+
+
 }
 

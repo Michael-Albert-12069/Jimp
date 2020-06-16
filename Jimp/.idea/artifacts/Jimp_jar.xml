@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Jimp:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Jimp_jar</output-path>
+    <root id="archive" name="Jimp.jar">
+      <element id="module-output" name="Jimp" />
+    </root>
+  </artifact>
+</component>

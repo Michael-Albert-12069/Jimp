@@ -9,8 +9,13 @@ public class HSL {
      * @param p is the picture you want to modify
      * @param factor is a number between -1, and 1
      */
-    public static void saturate(Picture p, double factor){
-        Pixel[][] pixels = p.getPixels2D();
+    public static Picture saturate(Picture p, double factor){
+
+        Picture out = new Picture(p.getHeight(), p.getWidth());
+        out.copyPicture(p);
+
+
+        Pixel[][] pixels = out.getPixels2D();
         for (int i = 0; i < pixels.length; i++) {
             for (int j = 0; j < pixels[i].length; j++) {
                 short avg = (short) average(pixels[i][j].getRGB());
@@ -48,11 +53,16 @@ public class HSL {
 
             }
         }
+        return out;
     }
 
-    public static void hue(Picture p, int degree){
+    public static Picture hue(Picture p, int degree){
         System.out.println("R: " + hueR(degree) + "; G: " + hueG(degree) + "; B: " + hueB(degree));
-        Pixel[][] pixels = p.getPixels2D();
+
+        Picture out = new Picture(p.getHeight(), p.getWidth());
+        out.copyPicture(p);
+
+        Pixel[][] pixels = out.getPixels2D();
         for (int i = 0; i < pixels.length; i++) {
             for (int j = 0; j < pixels[i].length; j++) {
                 int red =  pixels[i][j].getRed();
@@ -69,6 +79,7 @@ public class HSL {
 
             }
         }
+        return out;
     }
 
     public static void colorize(Picture p, int degree){
