@@ -7,10 +7,21 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class RGBPanel extends JPanel{
+public abstract class RGBPanel extends JPanel{
     public JSlider redSlider;
+    public JTextField rInput;
+    public JLabel rLabel;
+
     public JSlider greenSlider;
+    public JTextField gInput;
+    public JLabel gLabel;
+
+
     public JSlider blueSlider;
+    public JTextField bInput;
+    public JLabel bLabel;
+
+
     Color FG = Color.BLACK;
     Color MG = Color.LIGHT_GRAY;
     Color BG = Color.WHITE;
@@ -53,13 +64,13 @@ public class RGBPanel extends JPanel{
     }
 
     public void initRed(){
-        JLabel jLabel = new JLabel();
-        jLabel.setForeground( FG);
-        jLabel.setFont(new Font(Font.MONOSPACED, Font.BOLD, 15));
+        rLabel = new JLabel();
+        rLabel.setForeground( FG);
+        rLabel.setFont(new Font(Font.MONOSPACED, Font.BOLD, 15));
 
-        JTextField inputColor = new JTextField(r + "");
-        inputColor.setForeground(FG);
-        inputColor.setBackground(BG);
+        rInput = new JTextField(r + "");
+        rInput.setForeground(FG);
+        rInput.setBackground(BG);
 
         redSlider = new JSlider(0,255,128);
         redSlider.setBackground(BG);
@@ -72,41 +83,47 @@ public class RGBPanel extends JPanel{
         // set spacing
         redSlider.setMajorTickSpacing(127);
         redSlider.setMinorTickSpacing(3);
+
         redSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 r = redSlider.getValue();
-//                System.out.println(r);
-                jLabel.setText("Red   [" + numberSpacer(r,3 ) + "]: ");
-                inputColor.setText(r + "");
+//                System.out.println(b);
+                rLabel.setText("Red  [" + numberSpacer(r,3 ) + "]:  ");
+                rInput.setText(r + "");
+                onUpdate();
+
             }
         });
-        inputColor.addActionListener(new ActionListener() {
+        rInput.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                r = Integer.parseInt(inputColor.getText());
+                r = Integer.parseInt(rInput.getText());
                 if (r > 255){
                     r = 255;
                 } else if (r < 0){
                     r = 0;
                 }
                 redSlider.setValue(r);
-                jLabel.setText("Red   [" + numberSpacer(r,3 ) + "]: ");
-                inputColor.setText(r + "");
+                rLabel.setText("Red  [" + numberSpacer(r,3 ) + "]:  ");
+                rInput.setText(r + "");
+                onUpdate();
             }
         });
-        jLabel.setText("Red   [" + numberSpacer(redSlider.getValue(),3 ) + "]: ");
-        this.add(jLabel);
-        this.add(inputColor);
+
+
+        rLabel.setText("Red   [" + numberSpacer(redSlider.getValue(),3 ) + "]: ");
+        this.add(rLabel);
+        this.add(rInput);
         this.add(redSlider);
     }
     public void initBlue(){
-        JLabel jLabel = new JLabel();
-        jLabel.setForeground( FG);
-        jLabel.setFont(new Font(Font.MONOSPACED, Font.BOLD, 15));
-        JTextField inputColor = new JTextField(b + "");
-        inputColor.setForeground(FG);
-        inputColor.setBackground(BG);
+        bLabel = new JLabel();
+        bLabel.setForeground( FG);
+        bLabel.setFont(new Font(Font.MONOSPACED, Font.BOLD, 15));
+        bInput = new JTextField(b + "");
+        bInput.setForeground(FG);
+        bInput.setBackground(BG);
 
 //        blueLabel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
         blueSlider = new JSlider(0,255,128);
@@ -125,39 +142,42 @@ public class RGBPanel extends JPanel{
             public void stateChanged(ChangeEvent e) {
                 b = blueSlider.getValue();
 //                System.out.println(b);
-                jLabel.setText("Blue  [" + numberSpacer(b,3 ) + "]:  ");
-                inputColor.setText(b + "");
+                bLabel.setText("Blue  [" + numberSpacer(b,3 ) + "]:  ");
+                bInput.setText(b + "");
+                onUpdate();
 
             }
         });
-        inputColor.addActionListener(new ActionListener() {
+        bInput.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                b = Integer.parseInt(inputColor.getText());
+                b = Integer.parseInt(bInput.getText());
                 if (b > 255){
                     b = 255;
                 } else if (b < 0){
                     b = 0;
                 }
                 blueSlider.setValue(b);
-                jLabel.setText("Blue  [" + numberSpacer(b,3 ) + "]: ");
-                inputColor.setText(b + "");
+                bLabel.setText("Blue  [" + numberSpacer(b,3 ) + "]: ");
+                bInput.setText(b + "");
+                onUpdate();
+
             }
         });
-        jLabel.setText("Blue  [" + numberSpacer(blueSlider.getValue(),3 ) + "]:  ");
-        this.add(jLabel);
-        this.add(inputColor);
+        bLabel.setText("Blue  [" + numberSpacer(blueSlider.getValue(),3 ) + "]:  ");
+        this.add(bLabel);
+        this.add(bInput);
         this.add(blueSlider);
     }
     public void initGreen(){
-        JLabel jLabel = new JLabel();
-        jLabel.setForeground( FG);
+        gLabel = new JLabel();
+        gLabel.setForeground( FG);
 
-        JTextField inputColor = new JTextField(g + "");
-        inputColor.setForeground(FG);
-        inputColor.setBackground(BG);
+        gInput = new JTextField(g + "");
+        gInput.setForeground(FG);
+        gInput.setBackground(BG);
 
-        jLabel.setFont(new Font(Font.MONOSPACED, Font.BOLD, 15));
+        gLabel.setFont(new Font(Font.MONOSPACED, Font.BOLD, 15));
         greenSlider = new JSlider(0,255,128);
         greenSlider.setBackground(BG);
         greenSlider.setForeground( FG);
@@ -174,31 +194,70 @@ public class RGBPanel extends JPanel{
             public void stateChanged(ChangeEvent e) {
                 g = greenSlider.getValue();
 //                System.out.println(g);
-                jLabel.setText("Green [" + numberSpacer(g,3 ) + "]: ");
-                inputColor.setText(g + "");
+                gLabel.setText("Green [" + numberSpacer(g,3 ) + "]: ");
+                gInput.setText(g + "");
+                onUpdate();
 
             }
         });
-        inputColor.addActionListener(new ActionListener() {
+        gInput.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                g = Integer.parseInt(inputColor.getText());
+                g = Integer.parseInt(gInput.getText());
                 if (g > 255){
                     g = 255;
                 } else if (g < 0){
                     g = 0;
                 }
                 greenSlider.setValue(g);
-                jLabel.setText("Green [" + numberSpacer(g,3 ) + "]: ");
-                inputColor.setText(g + "");
+                gLabel.setText("Green [" + numberSpacer(g,3 ) + "]: ");
+                gInput.setText(g + "");
+                onUpdate();
+
             }
         });
-        jLabel.setText("Green [" + numberSpacer(greenSlider.getValue(),3 ) + "]: ");
-        this.add(jLabel);
-        this.add(inputColor);
+        gLabel.setText("Green [" + numberSpacer(greenSlider.getValue(),3 ) + "]: ");
+        this.add(gLabel);
+        this.add(gInput);
         this.add(greenSlider);
     }
 
+    public void setR(int red){
+        r = red;
+        if (r > 255){
+            r = 255;
+        } else if (r < 0){
+            r = 0;
+        }
+        redSlider.setValue(r);
+        rLabel.setText("Red  [" + numberSpacer(r,3 ) + "]:  ");
+        rInput.setText(r + "");
+        onUpdate();
+    }
+    public void setG(int green){
+        g = green;
+        if (g > 255){
+            g = 255;
+        } else if (g < 0){
+            g = 0;
+        }
+        greenSlider.setValue(g);
+        gLabel.setText("Green[" + numberSpacer(g,3 ) + "]:  ");
+        gInput.setText(g + "");
+        onUpdate();
+    }
+    public void setB(int blue){
+        b = blue;
+        if (b > 255){
+            b = 255;
+        } else if (b < 0){
+            b = 0;
+        }
+        blueSlider.setValue(b);
+        bLabel.setText("Green[" + numberSpacer(b,3 ) + "]:  ");
+        bInput.setText(b + "");
+        onUpdate();
+    }
     private static String numberSpacer(int number, int digits){
         Integer num = number;
         String n = num.toString();
@@ -210,5 +269,6 @@ public class RGBPanel extends JPanel{
         return out;
     }
 
+    public abstract void onUpdate();
 
 }

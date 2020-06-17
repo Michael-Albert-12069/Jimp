@@ -30,7 +30,26 @@ public class Picture extends SimplePicture {
         // let the parent class handle this fileName
         super(fileName);
     }
+    public Picture shrink(int factor){
+        Picture p = new Picture(this.getHeight(), this.getWidth());
+        p.copyPicture(this);
+        Picture out = new Picture(p.getHeight() / factor, p.getWidth()/ factor);
 
+
+
+        for (int y = 0; y < out.getHeight(); y++) {
+            for (int x = 0; x < out.getWidth(); x++) {
+                int oY = y * factor;
+                int oX = x * factor;
+                try {
+                    out.getPixel(x, y).setRGB(p.getPixel(oX, oY).getRGB());
+                } catch (ArrayIndexOutOfBoundsException e){
+                    System.out.println("x" + x + "; Y " + y );
+                }
+            }
+        }
+        return out;
+    }
     /**
      * Constructor that takes the width and height
      *

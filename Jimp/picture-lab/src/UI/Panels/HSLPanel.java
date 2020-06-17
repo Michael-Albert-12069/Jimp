@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class HSLPanel extends JPanel{
+public abstract class HSLPanel extends JPanel{
     public JSlider hueSlider;
     public JSlider satSlider;
     public JSlider lumSlider;
@@ -18,7 +18,7 @@ public class HSLPanel extends JPanel{
 
     public int h = 0;
     public int s = 0;
-    public int l = 127;
+    public int l = 0;
 
     public HSLPanel(int colorMode){
         super(new FlowLayout(FlowLayout.LEFT));
@@ -79,6 +79,7 @@ public class HSLPanel extends JPanel{
 ////                System.out.println(r);
 //                jLabel.setText("Hue   [" + numberSpacer(h,3 ) + "]: ");
 //                inputColor.setText(h + "");
+//                onUpdate();
 //            }
 //        });
 //        inputColor.addActionListener(new ActionListener() {
@@ -93,6 +94,7 @@ public class HSLPanel extends JPanel{
 //                hueSlider.setValue(h);
 //                jLabel.setText("Hue   [" + numberSpacer(h,3 ) + "]: ");
 //                inputColor.setText(h + "");
+//                onUpdate();
 //            }
 //        });
 //        jLabel.setText("Hue   [" + numberSpacer(hueSlider.getValue(),3 ) + "]: ");
@@ -111,7 +113,7 @@ public class HSLPanel extends JPanel{
         inputColor.setBackground(BG);
 
 //        blueLabel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
-        lumSlider = new JSlider(0,255,128);
+        lumSlider = new JSlider(-100,100,0);
         lumSlider.setBackground(BG);
         lumSlider.setForeground( FG);
 
@@ -120,8 +122,8 @@ public class HSLPanel extends JPanel{
         lumSlider.setPaintTicks(true);
         lumSlider.setPaintLabels(true);
         // set spacing
-        lumSlider.setMajorTickSpacing(127);
-        lumSlider.setMinorTickSpacing(3);
+        lumSlider.setMajorTickSpacing(25);
+        lumSlider.setMinorTickSpacing(5);
         lumSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -130,6 +132,7 @@ public class HSLPanel extends JPanel{
                 jLabel.setText("" +
                         "Luminance  [" + numberSpacer(l,3 ) + "]:  ");
                 inputColor.setText(l + "");
+                onUpdate();
 
             }
         });
@@ -145,9 +148,12 @@ public class HSLPanel extends JPanel{
                 lumSlider.setValue(l);
                 jLabel.setText("Luminance  [" + numberSpacer(l,3 ) + "]: ");
                 inputColor.setText(l + "");
+                onUpdate();
+
+
             }
         });
-        jLabel.setText("Luminance  [" + numberSpacer(lumSlider.getValue(),3 ) + "]:  ");
+        jLabel.setText("Luminance  [" + numberSpacer(l,3 ) + "]:  ");
         this.add(jLabel);
         this.add(inputColor);
         this.add(lumSlider);
@@ -179,6 +185,7 @@ public class HSLPanel extends JPanel{
                 System.out.println(s);
                 jLabel.setText("Saturation [" + numberSpacer(s,3 ) + "]: ");
                 inputColor.setText(s + "");
+                onUpdate();
 
             }
         });
@@ -194,6 +201,7 @@ public class HSLPanel extends JPanel{
                 satSlider.setValue(s);
                 jLabel.setText("Saturation [" + numberSpacer(s,3 ) + "]: ");
                 inputColor.setText(s + "");
+                onUpdate();
             }
         });
         jLabel.setText("Saturation [" + numberSpacer(satSlider.getValue(),3 ) + "]: ");
@@ -212,6 +220,8 @@ public class HSLPanel extends JPanel{
         out += n;
         return out;
     }
+
+    public abstract void onUpdate();
 
 
 }

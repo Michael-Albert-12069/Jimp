@@ -2,6 +2,7 @@ package Application.Tools;
 
 import PicHandler.Picture;
 import PicHandler.Pixel;
+import UI.Panels.RGBPanel;
 
 public class HSL {
     /**
@@ -108,6 +109,46 @@ public class HSL {
 
             }
         }
+    }
+
+    public static Picture contrast(Picture p, int degree){
+        degree *= -1;
+        double deg = degree / 100.0;
+        Picture out = new Picture(p.getHeight(), p.getWidth());
+        out.copyPicture(p);
+        Pixel[][] pixels = out.getPixels2D();
+        for (int i = 0; i < pixels.length; i++) {
+            for (int j = 0; j < pixels[i].length; j++) {
+                int red =  pixels[i][j].getRed();
+                int green =  pixels[i][j].getGreen();
+                int blue =  pixels[i][j].getBlue();
+
+                int redDiff = 0;
+                int greenDiff = 0;
+                int blueDiff = 0;
+                if (degree < 0){
+                    redDiff = (int) ((red - 0) * deg * -1.0);
+                    greenDiff = (int) ((green - 0) * deg * -1.0);
+                    blueDiff = (int) ((blue - 0) * deg * -1.0);
+                }
+                if (degree > 0){
+                    redDiff = (int) ((255 - red) * deg);
+                    greenDiff = (int) ((255 - green) * deg);
+                    blueDiff = (int) ((255 - green) * deg);
+                }
+
+
+                pixels[i][j].setRed(red + redDiff);
+                pixels[i][j].setGreen(green + greenDiff);
+                pixels[i][j].setBlue(blue + blueDiff);
+
+            }
+        }
+        return out;
+    }
+
+    public static Picture luminate(Picture p, int degree){
+        return RGB.rgb(p, degree, degree, degree);
     }
 
     private static double hueB(int degree){

@@ -6,9 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 
-import Application.Tools.HSL;
 import UI.Window;
-public class PanelMgr extends JPanel{
+public abstract class PanelMgr extends JPanel{
     public JSlider redSlider;
     public JSlider greenSlider;
     public JSlider blueSlider;
@@ -90,7 +89,12 @@ public class PanelMgr extends JPanel{
         Window window = new Window(240, 280);
         window.frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         window.setText("RGB");
-        rgbPanel = new RGBPanel(this.mode);
+        rgbPanel = new RGBPanel(this.mode) {
+            @Override
+            public void onUpdate() {
+                onChange();
+            }
+        };
         window.add(rgbPanel);
         window.hide();
         windows.put(RGB_WINDOW, window);
@@ -108,7 +112,6 @@ public class PanelMgr extends JPanel{
         });
 
     }
-
     public void initHSL(){
         JButton button = new JButton("HSL");
         button.setFont(new Font(Font.MONOSPACED, Font.BOLD, 17));
@@ -119,7 +122,12 @@ public class PanelMgr extends JPanel{
         Window window = new Window(240, 280);
         window.frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         window.setText("HSL");
-        hslPanel = new HSLPanel(this.mode);
+        hslPanel = new HSLPanel(this.mode) {
+            @Override
+            public void onUpdate() {
+                onChange();
+            }
+        };
         window.add(hslPanel);
         window.hide();
         windows.put(HSL_WINDOW, window);
@@ -137,6 +145,10 @@ public class PanelMgr extends JPanel{
         });
 
     }
+
+
+    public abstract void onChange();
+
 
     private static String numberSpacer(int number, int digits){
         Integer num = number;
