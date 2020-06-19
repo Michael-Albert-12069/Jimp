@@ -2,8 +2,8 @@ package Application;
 
 import Application.Tools.HSL;
 import Application.Tools.RGB;
-import Application.Tools.Transform;
 import UI.Canvas;
+import UI.JFramePositioner;
 import UI.Panels.FileSelector;
 import UI.Panels.HSLPanel;
 import UI.Panels.PanelMgr;
@@ -16,10 +16,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Main {
-    public static final int monitorW = 1440;
-    public static final int monitorH = 600;
-    public static double windowShrink;
+    public static final int WINDOW_PADDING = 38;
+    public static final int MONITOR_W = 1400;
+    public static final int MONITOR_H = (int) (900 * (2.5/4.0));
 
+
+    public static double windowShrink;
 
 
     public static int shrinkFactor;
@@ -44,11 +46,20 @@ public class Main {
         manager = new PanelMgr(COLOR_MODE) {
             @Override
             public void onChange() {
+                //very memory intensive
+//                C:\Users\Micha\Pictures\Camera Roll\20191210_080916.jpg
+                    render();
+            }
+
+            @Override
+            public void onRender() {
                 render();
             }
         };
 
-        Window panel = new Window(PanelMgr.WIDTH, PanelMgr.HEIGHT);
+        Window panel = new Window(MONITOR_W - RGBPanel.WIDTH - WINDOW_PADDING, PanelMgr.HEIGHT);
+        JFramePositioner.setLocationToLeft(panel.frame);
+        manager.positionWindows();
         panel.setText("Tools");
         panel.add(manager);
         panel.show();
@@ -60,6 +71,8 @@ public class Main {
         mainWindow = new Window((int) (pic.getWidth()),
                                 (int) (pic.getHeight()));
 //        System.out.println(pic.getWidth() + ", " + pic.getHeight());
+        JFramePositioner.setLocationTo(mainWindow.frame, 0, (int) (PanelMgr.HEIGHT + (WINDOW_PADDING * 1.5)));
+        // the eight and thirty are to adjust for internal window rendering BS
         canvas = new Canvas();
         mainWindow.add(canvas);
         canvas.addImage("main", pic);
@@ -88,7 +101,7 @@ public class Main {
             }
         };
         Picture reference = new Picture(imgPath);
-        int maxWH = Math.max(reference.getHeight() /monitorH , reference.getWidth() / monitorW);
+        int maxWH = Math.max(reference.getHeight() / MONITOR_H, reference.getWidth() / MONITOR_W);
         /**
          * if the picture is smaller than the monitor size
          * the integer 'maxWH' will cast to zero
@@ -123,18 +136,25 @@ public class Main {
         Picture newImg = new Picture(pic.getHeight(), pic.getWidth());
         newImg.copyPicture(pic);
 
-        if (!(rgbPanel.r == 0 || rgbPanel.g == 0 || rgbPanel.b == 0)){
-            newImg = RGB.rgb(pic, rgbPanel.r, rgbPanel.g, rgbPanel.b);
+
+
+        if (hslPanel.h != -1){
+            newImg = HSL.hue(newImg, hslPanel.h);
         }
-        System.out.println("hue: " + (hslPanel.s / 100.0));
         if (hslPanel.s != 0){
             newImg = HSL.saturate(newImg, (hslPanel.s / 100.0));
         }
         if (hslPanel.l != 0){
             int lum = (int) (((hslPanel.l / 100.0) * 127.0) + 127);
-            System.out.println("brightness = " + lum);
+//            System.out.println("brightness = " + lum);
             newImg = HSL.luminate(newImg, lum);
         }
+        if (!(rgbPanel.r == 127 && rgbPanel.g == 127 && rgbPanel.b == 127)){
+            newImg = RGB.rgb(newImg, rgbPanel.r, rgbPanel.g, rgbPanel.b);
+        }
+
+
+
         canvas.addImage("main", newImg);
 
         canvas.repaint();

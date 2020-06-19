@@ -6,15 +6,28 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.jar.JarInputStream;
 
 public abstract class HSLPanel extends JPanel{
     public JSlider hueSlider;
+    public JLabel hueLabel;
+    public JTextField hueInput;
+
     public JSlider satSlider;
+    public JLabel satLabel;
+    public JTextField satInput;
+
     public JSlider lumSlider;
+    public JLabel lumLabel;
+    public JTextField lumInput;
+
+
+
     Color FG = Color.BLACK;
     Color MG = Color.LIGHT_GRAY;
     Color BG = Color.WHITE;
-
+    //emphasized button;
+    Color EB = hexColor("#00ffae");
 
     public int h = 0;
     public int s = 0;
@@ -30,9 +43,10 @@ public abstract class HSLPanel extends JPanel{
             this.lightMode();
         }
         this.setBackground(BG);
-//        initHue();
+        initHue();
         initSat();
         initLum();
+        addReset();
     }
     public static final int LIGHT_MODE = 0;
     public static final int DARK_MODE = 1;
@@ -44,73 +58,81 @@ public abstract class HSLPanel extends JPanel{
     public void lightMode(){
         FG = Color.BLACK;
         MG = Color.LIGHT_GRAY;
+        EB = hexColor("#00ffae");
         BG = Color.WHITE;
     }
     public void darkMode(){
         FG = Color.WHITE;
         MG = Color.DARK_GRAY;
+        EB =  hexColor("#00b57c");
         BG = Color.DARK_GRAY;
     }
 
-//    public void initHue(){
-//        JLabel jLabel = new JLabel();
-//        jLabel.setForeground( FG);
-//        jLabel.setFont(new Font(Font.MONOSPACED, Font.BOLD, 15));
-//
-//        JTextField inputColor = new JTextField(h + "");
-//        inputColor.setForeground(FG);
-//        inputColor.setBackground(BG);
-//
-//        hueSlider = new JSlider(0,255,128);
-//        hueSlider.setBackground(BG);
-//        hueSlider.setForeground( FG);
-//
-//        // paint the ticks and tarcks
-//        hueSlider.setPaintTrack(true);
-//        hueSlider.setPaintTicks(true);
-//        hueSlider.setPaintLabels(true);
-//        // set spacing
-//        hueSlider.setMajorTickSpacing(127);
-//        hueSlider.setMinorTickSpacing(3);
-//        hueSlider.addChangeListener(new ChangeListener() {
-//            @Override
-//            public void stateChanged(ChangeEvent e) {
-//                h = hueSlider.getValue();
-////                System.out.println(r);
-//                jLabel.setText("Hue   [" + numberSpacer(h,3 ) + "]: ");
-//                inputColor.setText(h + "");
-//                onUpdate();
-//            }
-//        });
-//        inputColor.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                h = Integer.parseInt(inputColor.getText());
-//                if (h > 255){
-//                    h = 255;
-//                } else if (h < 0){
-//                    h = 0;
-//                }
-//                hueSlider.setValue(h);
-//                jLabel.setText("Hue   [" + numberSpacer(h,3 ) + "]: ");
-//                inputColor.setText(h + "");
-//                onUpdate();
-//            }
-//        });
-//        jLabel.setText("Hue   [" + numberSpacer(hueSlider.getValue(),3 ) + "]: ");
-//        this.add(jLabel);
-//        this.add(inputColor);
-//        this.add(hueSlider);
-//    }
 
 
+    public void initHue(){
+        hueLabel = new JLabel();
+        hueLabel.setForeground( FG);
+        hueLabel.setFont(new Font(Font.MONOSPACED, Font.BOLD, 15));
+        hueInput = new JTextField(l + "");
+        hueInput.setForeground(FG);
+        hueInput.setBackground(BG);
+
+//        blueLabel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
+        hueSlider = new JSlider(0,255,0);
+        hueSlider.setBackground(BG);
+        hueSlider.setForeground( FG);
+
+        // paint the ticks and tarcks
+        hueSlider.setPaintTrack(true);
+        hueSlider.setPaintTicks(true);
+        hueSlider.setPaintLabels(true);
+        // set spacing
+        hueSlider.setMajorTickSpacing(127);
+        hueSlider.setMinorTickSpacing(3);
+        hueSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                h = hueSlider.getValue();
+                System.out.println(h);
+                hueLabel.setText("Hue        [" + numberSpacer(h,3 ) + "]:  ");
+                hueInput.setText(h + "");
+                JSlider source = (JSlider)e.getSource();
+                if(!source.getValueIsAdjusting())
+                {
+                    onUpdate();
+                }
+            }
+        });
+        hueInput.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                h = Integer.parseInt(hueInput.getText());
+                if (h > 255){
+                    h = 255;
+                } else if (h < 0){
+                    h = 0;
+                }
+                hueSlider.setValue(l);
+                hueLabel.setText("Hue        [" + numberSpacer(h,3 ) + "]: ");
+                hueInput.setText(h + "");
+                onUpdate();
+
+
+            }
+        });
+        hueLabel.setText("Hue        [" + numberSpacer(h,3 ) + "]:  ");
+        this.add(hueLabel);
+        this.add(hueInput);
+        this.add(hueSlider);
+    }
     public void initLum(){
-        JLabel jLabel = new JLabel();
-        jLabel.setForeground( FG);
-        jLabel.setFont(new Font(Font.MONOSPACED, Font.BOLD, 15));
-        JTextField inputColor = new JTextField(l + "");
-        inputColor.setForeground(FG);
-        inputColor.setBackground(BG);
+        lumLabel = new JLabel();
+        lumLabel.setForeground( FG);
+        lumLabel.setFont(new Font(Font.MONOSPACED, Font.BOLD, 15));
+        lumInput = new JTextField(l + "");
+        lumInput.setForeground(FG);
+        lumInput.setBackground(BG);
 
 //        blueLabel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
         lumSlider = new JSlider(-100,100,0);
@@ -129,44 +151,47 @@ public abstract class HSLPanel extends JPanel{
             public void stateChanged(ChangeEvent e) {
                 l = lumSlider.getValue();
                 System.out.println(l);
-                jLabel.setText("" +
+                lumLabel.setText("" +
                         "Luminance  [" + numberSpacer(l,3 ) + "]:  ");
-                inputColor.setText(l + "");
-                onUpdate();
-
+                lumInput.setText(l + "");
+                JSlider source = (JSlider)e.getSource();
+                if(!source.getValueIsAdjusting())
+                {
+                    onUpdate();
+                }
             }
         });
-        inputColor.addActionListener(new ActionListener() {
+        lumInput.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                l = Integer.parseInt(inputColor.getText());
+                l = Integer.parseInt(lumInput.getText());
                 if (l > 255){
                     l = 255;
                 } else if (l < 0){
                     l = 0;
                 }
                 lumSlider.setValue(l);
-                jLabel.setText("Luminance  [" + numberSpacer(l,3 ) + "]: ");
-                inputColor.setText(l + "");
+                lumLabel.setText("Luminance  [" + numberSpacer(l,3 ) + "]: ");
+                lumInput.setText(l + "");
                 onUpdate();
 
 
             }
         });
-        jLabel.setText("Luminance  [" + numberSpacer(l,3 ) + "]:  ");
-        this.add(jLabel);
-        this.add(inputColor);
+        lumLabel.setText("Luminance  [" + numberSpacer(l,3 ) + "]:  ");
+        this.add(lumLabel);
+        this.add(lumInput);
         this.add(lumSlider);
     }
     public void initSat(){
-        JLabel jLabel = new JLabel();
-        jLabel.setForeground( FG);
+        satLabel = new JLabel();
+        satLabel.setForeground( FG);
 
-        JTextField inputColor = new JTextField(s + "");
-        inputColor.setForeground(FG);
-        inputColor.setBackground(BG);
+        satInput = new JTextField(s + "");
+        satInput.setForeground(FG);
+        satInput.setBackground(BG);
 
-        jLabel.setFont(new Font(Font.MONOSPACED, Font.BOLD, 15));
+        satLabel.setFont(new Font(Font.MONOSPACED, Font.BOLD, 15));
         satSlider = new JSlider(-100,100,0);
         satSlider.setBackground(BG);
         satSlider.setForeground( FG);
@@ -183,32 +208,93 @@ public abstract class HSLPanel extends JPanel{
             public void stateChanged(ChangeEvent e) {
                 s = satSlider.getValue();
                 System.out.println(s);
-                jLabel.setText("Saturation [" + numberSpacer(s,3 ) + "]: ");
-                inputColor.setText(s + "");
-                onUpdate();
-
+                satLabel.setText("Saturation [" + numberSpacer(s,3 ) + "]: ");
+                satInput.setText(s + "");
+                JSlider source = (JSlider)e.getSource();
+                if(!source.getValueIsAdjusting())
+                {
+                    onUpdate();
+                }
             }
         });
-        inputColor.addActionListener(new ActionListener() {
+        satInput.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                s = Integer.parseInt(inputColor.getText());
+                s = Integer.parseInt(satInput.getText());
                 if (s > 100){
                     s = 100;
                 } else if (s < -100){
                     s = -100;
                 }
                 satSlider.setValue(s);
-                jLabel.setText("Saturation [" + numberSpacer(s,3 ) + "]: ");
-                inputColor.setText(s + "");
+                satLabel.setText("Saturation [" + numberSpacer(s,3 ) + "]: ");
+                satInput.setText(s + "");
                 onUpdate();
             }
         });
-        jLabel.setText("Saturation [" + numberSpacer(satSlider.getValue(),3 ) + "]: ");
-        this.add(jLabel);
-        this.add(inputColor);
+        satLabel.setText("Saturation [" + numberSpacer(satSlider.getValue(),3 ) + "]: ");
+        this.add(satLabel);
+        this.add(satInput);
         this.add(satSlider);
     }
+    public void addReset(){
+        JButton reset = new JButton("RESET");
+        reset.setBackground(EB);
+        reset.setForeground(FG);
+        this.add(reset);
+        reset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setHue(-1);
+                setLum(0);
+                setSat(0);
+                onUpdate();
+            }
+        });
+    }
+
+    public void setHue(int n){
+        h = n;
+        if (h > 255){
+            h = 255;
+        } else if (h < 0){
+            h = 0;
+        }
+        hueSlider.setValue(l);
+        hueInput.setText(l + "");
+        hueLabel.setText("Hue        [" + numberSpacer(h,3 ) + "]:  ");
+        if (n == -1){
+            h = -1;
+            hueSlider.setValue(0);
+            hueInput.setText(-1 + "");
+            hueLabel.setText("Hue        [" + numberSpacer(-1,3 ) + "]:  ");
+        }
+    }
+    public void setLum(int n){
+        l = n;
+        if (l > 255){
+            l = 255;
+        } else if (l < 0){
+            l = 0;
+        }
+        lumSlider.setValue(l);
+        lumInput.setText(l + "");
+        lumLabel.setText("Luminance  [" + numberSpacer(l,3 ) + "]:  ");
+    }
+    public void setSat(int n){
+        s = n;
+        if (s > 100){
+            s = 100;
+        } else if (s < -100){
+            s = -100;
+        }
+        satSlider.setValue(s);
+        satInput.setText(s + "");
+        satLabel.setText("Saturation [" + numberSpacer(s,3 ) + "]:  ");
+    }
+
+
+
 
     private static String numberSpacer(int number, int digits){
         Integer num = number;
@@ -222,6 +308,14 @@ public abstract class HSLPanel extends JPanel{
     }
 
     public abstract void onUpdate();
+
+
+    private static Color hexColor(String colorStr) {
+        return new Color(
+                Integer.valueOf( colorStr.substring( 1, 3 ), 16 ),
+                Integer.valueOf( colorStr.substring( 3, 5 ), 16 ),
+                Integer.valueOf( colorStr.substring( 5, 7 ), 16 ) );
+    }
 
 
 }

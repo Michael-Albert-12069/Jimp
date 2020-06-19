@@ -4,10 +4,11 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 public abstract class RGBPanel extends JPanel{
+//    public boolean adjustingInProgress = false;
+
     public JSlider redSlider;
     public JTextField rInput;
     public JLabel rLabel;
@@ -25,6 +26,8 @@ public abstract class RGBPanel extends JPanel{
     Color FG = Color.BLACK;
     Color MG = Color.LIGHT_GRAY;
     Color BG = Color.WHITE;
+    //emphasized button;
+    Color EB = hexColor("#00ffae");
 
 
     public int r = 127;
@@ -33,6 +36,7 @@ public abstract class RGBPanel extends JPanel{
 
     public RGBPanel(int colorMode){
         super(new FlowLayout(FlowLayout.LEFT));
+
 
         if (colorMode == DARK_MODE){
             this.darkMode();
@@ -44,6 +48,7 @@ public abstract class RGBPanel extends JPanel{
         initRed();
         initGreen();
         initBlue();
+        addReset();
     }
     public static final int LIGHT_MODE = 0;
     public static final int DARK_MODE = 1;
@@ -55,11 +60,13 @@ public abstract class RGBPanel extends JPanel{
     public void lightMode(){
         FG = Color.BLACK;
         MG = Color.LIGHT_GRAY;
+        EB = hexColor("#00ffae");
         BG = Color.WHITE;
     }
     public void darkMode(){
         FG = Color.WHITE;
         MG = Color.DARK_GRAY;
+        EB =  hexColor("#00b57c");
         BG = Color.DARK_GRAY;
     }
 
@@ -67,7 +74,6 @@ public abstract class RGBPanel extends JPanel{
         rLabel = new JLabel();
         rLabel.setForeground( FG);
         rLabel.setFont(new Font(Font.MONOSPACED, Font.BOLD, 15));
-
         rInput = new JTextField(r + "");
         rInput.setForeground(FG);
         rInput.setBackground(BG);
@@ -75,6 +81,7 @@ public abstract class RGBPanel extends JPanel{
         redSlider = new JSlider(0,255,128);
         redSlider.setBackground(BG);
         redSlider.setForeground( FG);
+
 
         // paint the ticks and tarcks
         redSlider.setPaintTrack(true);
@@ -91,10 +98,15 @@ public abstract class RGBPanel extends JPanel{
 //                System.out.println(b);
                 rLabel.setText("Red  [" + numberSpacer(r,3 ) + "]:  ");
                 rInput.setText(r + "");
-                onUpdate();
+                JSlider source = (JSlider)e.getSource();
+                if(!source.getValueIsAdjusting())
+                {
+                    onUpdate();
+                }
 
             }
         });
+
         rInput.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -104,18 +116,17 @@ public abstract class RGBPanel extends JPanel{
                 } else if (r < 0){
                     r = 0;
                 }
-                redSlider.setValue(r);
+                RGBPanel.this.redSlider.setValue(r);
                 rLabel.setText("Red  [" + numberSpacer(r,3 ) + "]:  ");
                 rInput.setText(r + "");
                 onUpdate();
             }
         });
 
-
-        rLabel.setText("Red   [" + numberSpacer(redSlider.getValue(),3 ) + "]: ");
+        rLabel.setText("Red   [" + numberSpacer(this.redSlider.getValue(),3 ) + "]: ");
         this.add(rLabel);
         this.add(rInput);
-        this.add(redSlider);
+        this.add(this.redSlider);
     }
     public void initBlue(){
         bLabel = new JLabel();
@@ -144,7 +155,11 @@ public abstract class RGBPanel extends JPanel{
 //                System.out.println(b);
                 bLabel.setText("Blue  [" + numberSpacer(b,3 ) + "]:  ");
                 bInput.setText(b + "");
-                onUpdate();
+                JSlider source = (JSlider)e.getSource();
+                if(!source.getValueIsAdjusting())
+                {
+                    onUpdate();
+                }
 
             }
         });
@@ -196,10 +211,17 @@ public abstract class RGBPanel extends JPanel{
 //                System.out.println(g);
                 gLabel.setText("Green [" + numberSpacer(g,3 ) + "]: ");
                 gInput.setText(g + "");
-                onUpdate();
+                JSlider source = (JSlider)e.getSource();
+                if(!source.getValueIsAdjusting())
+                {
+                    onUpdate();
+                }
+
 
             }
         });
+
+
         gInput.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -220,6 +242,22 @@ public abstract class RGBPanel extends JPanel{
         this.add(gLabel);
         this.add(gInput);
         this.add(greenSlider);
+    }
+
+    public void addReset(){
+        JButton reset = new JButton("RESET");
+        reset.setBackground(EB);
+        reset.setForeground(FG);
+        this.add(reset);
+        reset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setR(127);
+                setG(127);
+                setB(127);
+                onUpdate();
+            }
+        });
     }
 
     public void setR(int red){
@@ -270,5 +308,13 @@ public abstract class RGBPanel extends JPanel{
     }
 
     public abstract void onUpdate();
+
+    private static Color hexColor(String colorStr) {
+        return new Color(
+                Integer.valueOf( colorStr.substring( 1, 3 ), 16 ),
+                Integer.valueOf( colorStr.substring( 3, 5 ), 16 ),
+                Integer.valueOf( colorStr.substring( 5, 7 ), 16 ) );
+    }
+
 
 }

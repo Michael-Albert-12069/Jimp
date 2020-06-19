@@ -5,7 +5,7 @@ import javax.swing.*;
 // Create a simple GUI window
 public class Window {
     public JFrame frame;
-    int w, h;
+    public int w, h;
 
     public Window(int width, int height){
         //Create and set up the window.
