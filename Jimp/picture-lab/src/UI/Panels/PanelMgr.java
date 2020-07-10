@@ -10,9 +10,7 @@ import Application.Main;
 import UI.JFramePositioner;
 import UI.Window;
 public abstract class PanelMgr extends JPanel{
-    public JSlider redSlider;
-    public JSlider greenSlider;
-    public JSlider blueSlider;
+
     Color FG = Color.BLACK;
     Color MG = hexColor("#e8e8e8");
     Color BG = Color.WHITE;
@@ -35,12 +33,14 @@ public abstract class PanelMgr extends JPanel{
         this.setBackground(BG);
         setRenderButton();
         initRGB();
+
         initHSL();
+        this.setExitButton();
     }
     public static final int LIGHT_MODE = 0;
     public static final int DARK_MODE = 1;
 
-    public static final int WIDTH = (int) (Main.MONITOR_W * (3.0/4.0));
+    public static final int WIDTH = (int) (Main.WINDOW_W * (3.0/4.0));
     public static final int HEIGHT = 50;
 
     public RGBPanel rgbPanel;
@@ -66,6 +66,7 @@ public abstract class PanelMgr extends JPanel{
     public static boolean HSL_VISIBLE = false;
 
     public static final String RENDER_BUTTON = "RENDER";
+    public static final String EXIT_BUTTON = "EXIT";
 
 
     public HashMap<String, JButton> buttons = new HashMap<>();
@@ -83,6 +84,27 @@ public abstract class PanelMgr extends JPanel{
         this.add(button);
         buttons.put(RENDER_BUTTON, button);
     }
+
+    public void setExitButton(){
+        JButton button = new JButton("Exit");
+        button.setFont(new Font(Font.MONOSPACED, Font.BOLD, 20));
+        if (mode == DARK_MODE){
+            button.setBackground(hexColor("#dd0000"));
+        } else {
+            button.setBackground(hexColor("#dd0000"));
+        }
+        button.setForeground(hexColor("#ffffff"));
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onExit();
+            }
+        });
+        this.add(button);
+        buttons.put(EXIT_BUTTON, button);
+    }
+
+    public abstract void onExit();
 
 
     public void initRGB(){

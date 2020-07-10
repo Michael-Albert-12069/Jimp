@@ -18,12 +18,19 @@ public class Canvas extends JPanel {
     HashMap<String, Shape> shapes = new HashMap<>();
     public HashMap<String, BufferedImage> images = new HashMap<>();
 
+    int w,h;
+    public Canvas(int width, int height){
+        super();
+        w = width;
+        h = height;
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-        drawBackground(g2d, Color.BLACK);
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(0, 0, w, h);
 
         for (Map.Entry<String, Shape> stringShapeEntry : shapes.entrySet()) {
             stringShapeEntry.getValue().render(g2d, Color.cyan);
@@ -68,8 +75,7 @@ public class Canvas extends JPanel {
 
 
     private static void drawBackground(Graphics2D g2d, Color color){
-        g2d.setColor(color);
-        g2d.fillRect(0, 0, Main.mainWindow.w, Main.mainWindow.w);
+
 
     }
 

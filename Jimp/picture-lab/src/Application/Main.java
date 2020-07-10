@@ -17,8 +17,12 @@ import java.awt.event.ActionListener;
 
 public class Main {
     public static final int WINDOW_PADDING = 38;
+
     public static final int MONITOR_W = 1400;
-    public static final int MONITOR_H = (int) (900 * (2.5/4.0));
+    public static final int MONITOR_H = 900;
+
+    public static final int WINDOW_W = MONITOR_W;
+    public static final int WINDOW_H = (int) (MONITOR_H * (2.5/4.0));
 
 
     public static double windowShrink;
@@ -45,6 +49,11 @@ public class Main {
     public static void initPanelMGR(){
         manager = new PanelMgr(COLOR_MODE) {
             @Override
+            public void onExit() {
+
+            }
+
+            @Override
             public void onChange() {
                 //very memory intensive
 //                C:\Users\Micha\Pictures\Camera Roll\20191210_080916.jpg
@@ -57,7 +66,7 @@ public class Main {
             }
         };
 
-        Window panel = new Window(MONITOR_W - RGBPanel.WIDTH - WINDOW_PADDING, PanelMgr.HEIGHT);
+        Window panel = new Window(WINDOW_W - RGBPanel.WIDTH - WINDOW_PADDING, PanelMgr.HEIGHT);
         JFramePositioner.setLocationToLeft(panel.frame);
         manager.positionWindows();
         panel.setText("Tools");
@@ -73,7 +82,7 @@ public class Main {
 //        System.out.println(pic.getWidth() + ", " + pic.getHeight());
         JFramePositioner.setLocationTo(mainWindow.frame, 0, (int) (PanelMgr.HEIGHT + (WINDOW_PADDING * 1.5)));
         // the eight and thirty are to adjust for internal window rendering BS
-        canvas = new Canvas();
+        canvas = new Canvas(mainWindow.w, mainWindow.h);
         mainWindow.add(canvas);
         canvas.addImage("main", pic);
         JButton render = new JButton("render");
@@ -101,7 +110,7 @@ public class Main {
             }
         };
         Picture reference = new Picture(imgPath);
-        int maxWH = Math.max(reference.getHeight() / MONITOR_H, reference.getWidth() / MONITOR_W);
+        int maxWH = Math.max(reference.getHeight() / WINDOW_H, reference.getWidth() / WINDOW_W);
         /**
          * if the picture is smaller than the monitor size
          * the integer 'maxWH' will cast to zero
